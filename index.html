@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Algo para ti</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+}
+
+#moon{
+position:absolute;
+top:80px;
+left:50%;
+transform:translateX(-50%);
+width:180px;
+height:180px;
+border-radius:50%;
+background:#eee;
+box-shadow:0 0 40px white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+color:black;
+}
+
+#bunny{
+font-size:60px;
+margin-top:250px;
+}
+
+button{
+padding:15px 30px;
+font-size:20px;
+border:none;
+border-radius:10px;
+background:pink;
+cursor:pointer;
+margin-top:20px;
+}
+
+#acertijos{
+display:none;
+margin-top:20px;
+}
+
+input{
+padding:10px;
+font-size:16px;
+}
+
+#mensaje{
+font-size:40px;
+margin-top:30px;
+}
+
+#pregunta{
+display:none;
+margin-top:40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="moon">🌙</div>
+
+<div id="bunny">🐰🎀</div>
+
+<h1>Debo decirte algo...</h1>
+
+<button onclick="empezar()">EMPEZAR</button>
+
+<div id="acertijos">
+
+<p>Acertijo 1: ¿Cuánto es 2 + 2?</p>
+<input id="r1">
+<button onclick="check1()">OK</button>
+
+<div id="a2" style="display:none">
+
+<p>Acertijo 2: ¿Color del cielo?</p>
+<input id="r2">
+<button onclick="check2()">OK</button>
+
+</div>
+
+<div id="a3" style="display:none">
+
+<p>Acertijo 3: ¿Cuántos días tiene una semana?</p>
+<input id="r3">
+<button onclick="check3()">OK</button>
+
+</div>
+
+</div>
+
+<div id="mensaje"></div>
+
+<div id="pregunta">
+
+<h2>¿Quieres ser la aya de mi Mitsuki?</h2>
+
+<button onclick="si()">SI</button>
+<button onclick="no()">NO</button>
+
+</div>
+
+<div id="player" style="display:none"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+
+let player
+
+function onYouTubeIframeAPIReady(){
+player=new YT.Player('player',{
+height:'0',
+width:'0',
+videoId:'Xh6Qh8qkC5Q'
+})
+}
+
+function empezar(){
+
+if(player){player.playVideo()}
+
+document.querySelector("button").style.display="none"
+
+document.getElementById("acertijos").style.display="block"
+
+}
+
+function check1(){
+if(document.getElementById("r1").value==4){
+document.getElementById("a2").style.display="block"
+}
+}
+
+function check2(){
+if(document.getElementById("r2").value.toLowerCase()=="azul"){
+document.getElementById("a3").style.display="block"
+}
+}
+
+function check3(){
+if(document.getElementById("r3").value==7){
+mensaje()
+}
+}
+
+function mensaje(){
+
+let text="me gustas"
+let i=0
+let m=document.getElementById("mensaje")
+
+let intervalo=setInterval(function(){
+
+m.innerHTML+=text[i]
+
+i++
+
+if(i>=text.length){
+clearInterval(intervalo)
+document.getElementById("pregunta").style.display="block"
+}
+
+},300)
+
+}
+
+function firework(){
+
+let f=document.createElement("div")
+f.innerHTML="✨"
+f.style.position="absolute"
+f.style.left=Math.random()*window.innerWidth+"px"
+f.style.top=Math.random()*window.innerHeight+"px"
+f.style.fontSize="30px"
+
+document.body.appendChild(f)
+
+setTimeout(()=>{f.remove()},2000)
+
+}
+
+function corazon(){
+
+let cx=window.innerWidth/2
+let cy=window.innerHeight/2
+
+for(let t=0;t<Math.PI*2;t+=0.1){
+
+let x=16*Math.pow(Math.sin(t),3)
+let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
+
+let s=document.createElement("div")
+
+s.innerHTML="✨"
+s.style.position="absolute"
+
+s.style.left=cx+x*15+"px"
+s.style.top=cy+y*15+"px"
+
+s.style.fontSize="25px"
+
+document.body.appendChild(s)
+
+setTimeout(()=>{s.remove()},4000)
+
+}
+
+}
+
+function si(){
+
+document.getElementById("pregunta").style.display="none"
+
+document.getElementById("moon").innerHTML="MANI"
+
+for(let i=0;i<8;i++){
+setTimeout(firework,i*500)
+}
+
+setTimeout(corazon,2000)
+
+}
+
+function no(){
+alert("piénsalo otra vez 🐰")
+}
+
+</script>
+
+</body>
+</html>
