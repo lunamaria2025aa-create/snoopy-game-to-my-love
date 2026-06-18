@@ -1,247 +1,286 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Algo para ti</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snoopy Sweet Snacks 🍓</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0fdf4; /* Fondo exterior suave */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
 
-<style>
+        h1 {
+            color: #6b21a8;
+            margin-bottom: 5px;
+            font-size: 28px;
+        }
 
-body{
-margin:0;
-background:black;
-color:white;
-font-family:Arial;
-text-align:center;
-overflow:hidden;
-}
+        /* Contenedor principal del juego */
+        #pantalla-juego {
+            width: 500px;
+            height: 400px;
+            background-color: #bae6fd; /* Azul cielo idéntico a la imagen */
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #475569;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
 
-#moon{
-position:absolute;
-top:80px;
-left:50%;
-transform:translateX(-50%);
-width:180px;
-height:180px;
-border-radius:50%;
-background:#eee;
-box-shadow:0 0 40px white;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:40px;
-color:black;
-}
+        /* Marcador de puntos y vidas arriba a la izquierda */
+        #marcador {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 18px;
+            color: #1e293b;
+            font-weight: bold;
+            line-height: 1.4;
+            z-index: 10;
+        }
 
-#bunny{
-font-size:60px;
-margin-top:250px;
-}
+        /* El suelo verde */
+        #suelo {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #bbf7d0; /* Verde pastito claro */
+            border-top: 2px solid #86efac;
+        }
 
-button{
-padding:15px 30px;
-font-size:20px;
-border:none;
-border-radius:10px;
-background:pink;
-cursor:pointer;
-margin-top:20px;
-}
+        /* Flores decorativas en el fondo derecho */
+        #decoracion {
+            position: absolute;
+            bottom: 45px;
+            right: 20px;
+            font-size: 24px;
+            opacity: 0.8;
+        }
 
-#acertijos{
-display:none;
-margin-top:20px;
-}
+        /* Personaje: Snoopy (Usamos un emoji de perrito con sombrero o mochila en texto) */
+        #snoopy {
+            width: 50px;
+            height: 50px;
+            font-size: 45px;
+            position: absolute;
+            bottom: 35px; /* Ajustado para que camine sobre el pasto */
+            left: 225px;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
 
-input{
-padding:10px;
-font-size:16px;
-}
+        /* Snacks que caen */
+        .snack {
+            position: absolute;
+            font-size: 30px;
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            line-height: 35px;
+        }
 
-#mensaje{
-font-size:40px;
-margin-top:30px;
-}
+        /* Pantallas de estado (Game Over / Inicio) */
+        .pantalla-estado {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
 
-#pregunta{
-display:none;
-margin-top:40px;
-}
+        .btn-jugar {
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-</style>
+        .btn-jugar:hover {
+            background-color: #9333ea;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="moon">🌙</div>
-
-<div id="bunny">🐰🎀</div>
-
-<h1>Debo decirte algo...</h1>
-
-<button onclick="empezar()">EMPEZAR</button>
-
-<div id="acertijos">
-
-<p>Acertijo 1: ¿Cuánto es 2 + 2?</p>
-<input id="r1">
-<button onclick="check1()">OK</button>
-
-<div id="a2" style="display:none">
-
-<p>Acertijo 2: ¿Color del cielo?</p>
-<input id="r2">
-<button onclick="check2()">OK</button>
-
-</div>
-
-<div id="a3" style="display:none">
-
-<p>Acertijo 3: ¿Cuántos días tiene una semana?</p>
-<input id="r3">
-<button onclick="check3()">OK</button>
-
-</div>
-
-</div>
-
-<div id="mensaje"></div>
-
-<div id="pregunta">
-
-<h2>¿Quieres ser la aya de mi Mitsuki?</h2>
-
-<button onclick="si()">SI</button>
-<button onclick="no()">NO</button>
-
-</div>
-
-<div id="player" style="display:none"></div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-
-let player
-
-function onYouTubeIframeAPIReady(){
-player=new YT.Player('player',{
-height:'0',
-width:'0',
-videoId:'Xh6Qh8qkC5Q'
-})
-}
-
-function empezar(){
-
-if(player){player.playVideo()}
-
-document.querySelector("button").style.display="none"
-
-document.getElementById("acertijos").style.display="block"
-
-}
-
-function check1(){
-if(document.getElementById("r1").value==4){
-document.getElementById("a2").style.display="block"
-}
-}
-
-function check2(){
-if(document.getElementById("r2").value.toLowerCase()=="azul"){
-document.getElementById("a3").style.display="block"
-}
-}
-
-function check3(){
-if(document.getElementById("r3").value==7){
-mensaje()
-}
-}
-
-function mensaje(){
-
-let text="me gustas"
-let i=0
-let m=document.getElementById("mensaje")
-
-let intervalo=setInterval(function(){
-
-m.innerHTML+=text[i]
-
-i++
-
-if(i>=text.length){
-clearInterval(intervalo)
-document.getElementById("pregunta").style.display="block"
-}
-
-},300)
-
-}
-
-function firework(){
-
-let f=document.createElement("div")
-f.innerHTML="✨"
-f.style.position="absolute"
-f.style.left=Math.random()*window.innerWidth+"px"
-f.style.top=Math.random()*window.innerHeight+"px"
-f.style.fontSize="30px"
-
-document.body.appendChild(f)
-
-setTimeout(()=>{f.remove()},2000)
-
-}
-
-function corazon(){
-
-let cx=window.innerWidth/2
-let cy=window.innerHeight/2
-
-for(let t=0;t<Math.PI*2;t+=0.1){
-
-let x=16*Math.pow(Math.sin(t),3)
-let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
-
-let s=document.createElement("div")
-
-s.innerHTML="✨"
-s.style.position="absolute"
-
-s.style.left=cx+x*15+"px"
-s.style.top=cy+y*15+"px"
-
-s.style.fontSize="25px"
-
-document.body.appendChild(s)
-
-setTimeout(()=>{s.remove()},4000)
-
-}
-
-}
-
-function si(){
-
-document.getElementById("pregunta").style.display="none"
-
-document.getElementById("moon").innerHTML="MANI"
-
-for(let i=0;i<8;i++){
-setTimeout(firework,i*500)
-}
-
-setTimeout(corazon,2000)
-
-}
-
-function no(){
-alert("piénsalo otra vez 🐰")
-}
-
-</script>
-
+    <h1>Snoopy sweet snacks</h1>
+
+    <div id="pantalla-juego">
+        <div id="marcador">
+            Puntos: <span id="puntos">0</span><br>
+            Vidas: <span id="vidas">5</span>
+        </div>
+
+        <div id="decoracion">🌸🍄🌻</div>
+
+        <div id="snoopy">🐶</div>
+
+        <div id="suelo"></div>
+
+        <div id="menu-inicio" class="pantalla-estado">
+            <h2 id="titulo-menu" style="color: #6b21a8; margin-bottom: 20px;">¡Ayuda a Snoopy!</h2>
+            <button class="btn-jugar" onclick="comenzarJuego()">Jugar</button>
+        </div>
+    </div>
+
+    <script>
+        const pantalla = document.getElementById('pantalla-juego');
+        const snoopy = document.getElementById('snoopy');
+        const txtPuntos = document.getElementById('puntos');
+        const txtVidas = document.getElementById('vidas');
+        const menuInicio = document.getElementById('menu-inicio');
+        const tituloMenu = document.getElementById('titulo-menu');
+
+        let posicionSnoopy = 225;
+        let puntos = 0;
+        let vidas = 5;
+        let juegoActivo = false;
+        let velocidadCaida = 3;
+        let intervaloCreacion;
+
+        // Tipos de snacks que le gustan a Snoopy (Fresas, donas, galletas, helados)
+        const listaSnacks = ['🍓', '🍩', '🍪', '🍦', '🍰'];
+
+        // Movimiento con el Mouse / Ratón (para que sea fluido como el de la imagen)
+        pantalla.addEventListener('mousemove', (e) => {
+            if (!juegoActivo) return;
+
+            // Obtener la posición del mouse relativa a la pantalla del juego
+            const rect = pantalla.getBoundingClientRect();
+            let mouseX = e.clientX - rect.left;
+
+            // Centrar a Snoopy en el puntero y evitar que se salga de los bordes
+            posicionSnoopy = mouseX - 25; 
+            if (posicionSnoopy < 0) posicionSnoopy = 0;
+            if (posicionSnoopy > 450) posicionSnoopy = 450;
+
+            snoopy.style.left = posicionSnoopy + 'px';
+        });
+
+        // También dejamos soporte para las flechas del teclado por si acaso
+        document.addEventListener('keydown', (e) => {
+            if (!juegoActivo) return;
+            if (e.key === 'ArrowLeft' && posicionSnoopy > 0) {
+                posicionSnoopy -= 25;
+            } else if (e.key === 'ArrowRight' && posicionSnoopy < 450) {
+                posicionSnoopy += 25;
+            }
+            snoopy.style.left = posicionSnoopy + 'px';
+        });
+
+        function crearSnack() {
+            if (!juegoActivo) return;
+
+            const snack = document.createElement('div');
+            snack.classList.add('snack');
+            
+            // Elegir un dulce aleatorio
+            snack.innerText = listaSnacks[Math.floor(Math.random() * listaSnacks.length)];
+            
+            // Posición X aleatoria
+            const xAleatoria = Math.floor(Math.random() * 465);
+            snack.style.left = xAleatoria + 'px';
+            snack.style.top = '0px';
+            
+            pantalla.appendChild(snack);
+
+            let posicionY = 0;
+
+            function caer() {
+                if (!juegoActivo) {
+                    snack.remove();
+                    return;
+                }
+
+                posicionY += velocidadCaida;
+                snack.style.top = posicionY + 'px';
+
+                // Colisión con Snoopy (Rango de altura donde está el perrito)
+                if (posicionY >= 310 && posicionY <= 340) {
+                    const snackX = parseInt(snack.style.left);
+                    // Validar si cae sobre el ancho de Snoopy
+                    if (snackX + 30 >= posicionSnoopy && snackX <= posicionSnoopy + 50) {
+                        puntos++;
+                        txtPuntos.innerText = puntos;
+                        snack.remove();
+
+                        // Aumentar la dificultad gradualmente
+                        if (puntos % 10 === 0) velocidadCaida += 0.5;
+                        return;
+                    }
+                }
+
+                // Si pasa el pasto y cae al suelo, se pierde una vida
+                if (posicionY > 365) {
+                    snack.remove();
+                    vidas--;
+                    txtVidas.innerText = vidas;
+
+                    if (vidas <= 0) {
+                        finalizarJuego();
+                    }
+                } else {
+                    requestAnimationFrame(caer);
+                }
+            }
+
+            requestAnimationFrame(caer);
+        }
+
+        function comenzarJuego() {
+            puntos = 0;
+            vidas = 5;
+            velocidadCaida = 3;
+            posicionSnoopy = 225;
+            snoopy.style.left = posicionSnoopy + 'px';
+            
+            txtPuntos.innerText = puntos;
+            txtVidas.innerText = vidas;
+            menuInicio.style.display = 'none';
+            juegoActivo = true;
+
+            // Eliminar snacks residuales
+            document.querySelectorAll('.snack').forEach(s => s.remove());
+
+            // Crear un dulce cada 1 segundo (1000ms)
+            clearInterval(intervaloCreacion);
+            intervaloCreacion = setInterval(crearSnack, 1000);
+        }
+
+        function finalizarJuego() {
+            juegoActivo = false;
+            clearInterval(intervaloCreacion);
+            tituloMenu.innerText = "¡Fin del Juego! 🍓\nScore: " + puntos;
+            menuInicio.style.display = 'flex';
+        }
+
+        // Mostrar el menú al cargar por primera vez
+        menuInicio.style.display = 'flex';
+    </script>
 </body>
 </html>
